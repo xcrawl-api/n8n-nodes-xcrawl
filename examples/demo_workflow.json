@@ -1,0 +1,66 @@
+{
+  "name": "Scrape content from a URL",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        0
+      ],
+      "id": "131a321c-4e53-42b8-9d65-e5db23903bb4",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://www.x.com",
+        "requestOptions": {},
+        "jsRenderOptions": {},
+        "proxyOptions": {},
+        "webhookOptions": {}
+      },
+      "type": "n8n-nodes-xcrawl.webScraper",
+      "typeVersion": 1,
+      "position": [
+        144,
+        0
+      ],
+      "id": "b74e8da0-5348-4ca0-819e-5f0c0db17ba5",
+      "name": "Scrape content from a URL",
+      "credentials": {
+        "xCrawlApi": {
+          "id": "iqZdFvQwh8VuwhZx",
+          "name": "XCrawl account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Scrape content from a URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "e9df9d48-ef0a-45f2-86af-fb43830fe6b0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "be4bfa68c2233daec1b233f54328ad0f92fa028ff32bc1f03c0c5363fe6fc359"
+  },
+  "id": "NDycK8LZlahkYB4u",
+  "tags": []
+}
