@@ -2,3 +2,7 @@
 start-n8n.sh
 .claude/
 examples
+.github/
+tsconfig.json
+**/*.ts
+!**/*.d.ts
