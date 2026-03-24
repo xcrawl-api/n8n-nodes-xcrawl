@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-xcrawl",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Scrape, crawl, and extract structured data from any website using the XCrawl API.",
   "main": "index.js",
   "scripts": {
