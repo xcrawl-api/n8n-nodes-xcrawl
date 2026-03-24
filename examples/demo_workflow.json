@@ -1,15 +1,15 @@
 {
-  "name": "Scrape content from a URL",
+  "name": "XCrawl Demo - Scrape, Crawl & Search",
   "nodes": [
     {
       "parameters": {},
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -224,
+        0,
         0
       ],
-      "id": "131a321c-4e53-42b8-9d65-e5db23903bb4",
+      "id": "74776546-7feb-4d9c-a640-66a4c119279b",
       "name": "When clicking ‘Execute workflow’"
     },
     {
@@ -23,14 +23,57 @@
       "type": "n8n-nodes-xcrawl.webScraper",
       "typeVersion": 1,
       "position": [
-        144,
+        208,
         0
       ],
-      "id": "b74e8da0-5348-4ca0-819e-5f0c0db17ba5",
+      "id": "a4fadcdd-3ce0-462c-9b0d-1e009a8a43d1",
       "name": "Scrape content from a URL",
       "credentials": {
         "xCrawlApi": {
-          "id": "iqZdFvQwh8VuwhZx",
+          "id": "28q6D00TzXh1QwIf",
+          "name": "XCrawl account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "Crawling",
+        "operation": "crawlResult",
+        "crawlId": "01KMEVNKAC5AMDR99AMQZMQ3ER"
+      },
+      "type": "n8n-nodes-xcrawl.webScraper",
+      "typeVersion": 1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "234a44dd-a4ae-4958-a63b-0fcbf9ea03a7",
+      "name": "Retrieve crawl result",
+      "credentials": {
+        "xCrawlApi": {
+          "id": "28q6D00TzXh1QwIf",
+          "name": "XCrawl account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "MapSearch",
+        "operation": "search",
+        "query": "n8n automation",
+        "searchOptions": {}
+      },
+      "type": "n8n-nodes-xcrawl.webScraper",
+      "typeVersion": 1,
+      "position": [
+        272,
+        240
+      ],
+      "id": "c7fb2b75-1d18-4930-a0bf-02471d426863",
+      "name": "Search the web by keyword",
+      "credentials": {
+        "xCrawlApi": {
+          "id": "28q6D00TzXh1QwIf",
           "name": "XCrawl account"
         }
       }
@@ -48,6 +91,28 @@
           }
         ]
       ]
+    },
+    "Scrape content from a URL": {
+      "main": [
+        [
+          {
+            "node": "Retrieve crawl result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve crawl result": {
+      "main": [
+        [
+          {
+            "node": "Search the web by keyword",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -56,11 +121,11 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "e9df9d48-ef0a-45f2-86af-fb43830fe6b0",
+  "versionId": "1ff55c76-9591-49b5-b703-0816d64a07d9",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "be4bfa68c2233daec1b233f54328ad0f92fa028ff32bc1f03c0c5363fe6fc359"
   },
-  "id": "NDycK8LZlahkYB4u",
+  "id": "VDr6NNo3AqvW0V8X",
   "tags": []
 }

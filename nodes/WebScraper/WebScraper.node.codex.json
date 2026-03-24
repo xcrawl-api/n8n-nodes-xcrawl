@@ -1,0 +1,19 @@
+{
+  "node": "n8n-nodes-xcrawl.webScraper",
+  "nodeVersion": "1.0",
+  "codexVersion": "1.0",
+  "categories": ["Development", "Data & Storage"],
+  "resources": {
+    "primaryDocumentation": [
+      {
+        "url": "https://docs.xcrawl.com/doc"
+      }
+    ],
+    "credentialDocumentation": [
+      {
+        "url": "https://dash.xcrawl.com/api-key"
+      }
+    ]
+  },
+  "alias": ["scrape", "crawl", "web scraping", "html", "markdown", "screenshot", "search", "map"]
+}

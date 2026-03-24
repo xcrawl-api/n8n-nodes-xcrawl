@@ -9,6 +9,11 @@ import {
 
 const BASE_URL = 'https://run.xcrawl.com';
 
+// Helper: conditionally include object fields (avoids `...opt(false, {...})` in strict mode)
+function opt(condition: unknown, value: Record<string, unknown>): Record<string, unknown> {
+	return condition ? value : {};
+}
+
 export class WebScraper implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'XCrawl',
@@ -180,12 +185,14 @@ export class WebScraper implements INodeType {
 						name: 'blockAds',
 						type: 'boolean',
 						default: true,
+						description: 'Whether to block ads and trackers during the request',
 					},
 					{
 						displayName: 'Skip TLS Verification',
 						name: 'skipTlsVerification',
 						type: 'boolean',
 						default: true,
+						description: 'Whether to skip TLS/SSL certificate verification',
 					},
 				],
 			},
@@ -204,15 +211,16 @@ export class WebScraper implements INodeType {
 						name: 'enabled',
 						type: 'boolean',
 						default: true,
+						description: 'Whether to use a headless browser to render JavaScript before scraping',
 					},
 					{
 						displayName: 'Wait Until',
 						name: 'waitUntil',
 						type: 'options',
 						options: [
-							{ name: 'load', value: 'load' },
-							{ name: 'domcontentloaded', value: 'domcontentloaded' },
-							{ name: 'networkidle', value: 'networkidle' },
+							{ name: 'Load', value: 'load' },
+							{ name: 'DOMContentLoaded', value: 'domcontentloaded' },
+							{ name: 'Network Idle', value: 'networkidle' },
 						],
 						default: 'load',
 					},
@@ -277,9 +285,9 @@ export class WebScraper implements INodeType {
 						name: 'events',
 						type: 'multiOptions',
 						options: [
-							{ name: 'started', value: 'started' },
-							{ name: 'completed', value: 'completed' },
-							{ name: 'failed', value: 'failed' },
+							{ name: 'Started', value: 'started' },
+							{ name: 'Completed', value: 'completed' },
+							{ name: 'Failed', value: 'failed' },
 						],
 						default: ['completed', 'failed'],
 					},
@@ -359,12 +367,14 @@ export class WebScraper implements INodeType {
 						name: 'includeSubdomains',
 						type: 'boolean',
 						default: true,
+						description: 'Whether to include URLs from subdomains in the map results',
 					},
 					{
 						displayName: 'Ignore Query Parameters',
 						name: 'ignoreQueryParameters',
 						type: 'boolean',
 						default: true,
+						description: 'Whether to deduplicate URLs that differ only by query string',
 					},
 					{
 						displayName: 'URL Filter (Regex)',
@@ -390,36 +400,42 @@ export class WebScraper implements INodeType {
 						name: 'limit',
 						type: 'number',
 						default: 100,
+						description: 'Maximum number of pages to crawl',
 					},
 					{
 						displayName: 'Max Depth',
 						name: 'maxDepth',
 						type: 'number',
 						default: 3,
+						description: 'Maximum link depth to follow from the start URL',
 					},
 					{
 						displayName: 'Include Entire Domain',
 						name: 'includeEntireDomain',
 						type: 'boolean',
 						default: false,
+						description: 'Whether to crawl all paths across the entire domain, not just under the start URL',
 					},
 					{
 						displayName: 'Include Subdomains',
 						name: 'includeSubdomains',
 						type: 'boolean',
 						default: false,
+						description: 'Whether to follow and crawl links on subdomains',
 					},
 					{
 						displayName: 'Include External Links',
 						name: 'includeExternalLinks',
 						type: 'boolean',
 						default: false,
+						description: 'Whether to follow links pointing to external domains',
 					},
 					{
 						displayName: 'Use Sitemaps',
 						name: 'sitemaps',
 						type: 'boolean',
 						default: true,
+						description: "Whether to use the site's sitemap.xml to discover URLs",
 					},
 					{
 						displayName: 'Include URL Patterns (one regex per line)',
@@ -489,22 +505,22 @@ export class WebScraper implements INodeType {
 
 					if (Object.keys(requestOptions).length > 0) {
 						body.request = {
-							...(requestOptions.device && { device: requestOptions.device }),
-							...(requestOptions.locale && { locale: requestOptions.locale }),
-							...(requestOptions.onlyMainContent !== undefined && { only_main_content: requestOptions.onlyMainContent }),
-							...(requestOptions.blockAds !== undefined && { block_ads: requestOptions.blockAds }),
-							...(requestOptions.skipTlsVerification !== undefined && { skip_tls_verification: requestOptions.skipTlsVerification }),
+							...opt(requestOptions.device, { device: requestOptions.device }),
+							...opt(requestOptions.locale, { locale: requestOptions.locale }),
+							...opt(requestOptions.onlyMainContent !== undefined, { only_main_content: requestOptions.onlyMainContent }),
+							...opt(requestOptions.blockAds !== undefined, { block_ads: requestOptions.blockAds }),
+							...opt(requestOptions.skipTlsVerification !== undefined, { skip_tls_verification: requestOptions.skipTlsVerification }),
 						};
 					}
 
 					if (Object.keys(jsRenderOptions).length > 0) {
 						body.js_render = {
-							...(jsRenderOptions.enabled !== undefined && { enabled: jsRenderOptions.enabled }),
-							...(jsRenderOptions.waitUntil && { wait_until: jsRenderOptions.waitUntil }),
-							...((jsRenderOptions.viewportWidth || jsRenderOptions.viewportHeight) && {
+							...opt(jsRenderOptions.enabled !== undefined, { enabled: jsRenderOptions.enabled }),
+							...opt(jsRenderOptions.waitUntil, { wait_until: jsRenderOptions.waitUntil }),
+							...opt(jsRenderOptions.viewportWidth || jsRenderOptions.viewportHeight, {
 								viewport: {
-									...(jsRenderOptions.viewportWidth && { width: jsRenderOptions.viewportWidth }),
-									...(jsRenderOptions.viewportHeight && { height: jsRenderOptions.viewportHeight }),
+									...opt(jsRenderOptions.viewportWidth, { width: jsRenderOptions.viewportWidth }),
+									...opt(jsRenderOptions.viewportHeight, { height: jsRenderOptions.viewportHeight }),
 								},
 							}),
 						};
@@ -512,15 +528,15 @@ export class WebScraper implements INodeType {
 
 					if (Object.keys(proxyOptions).length > 0) {
 						body.proxy = {
-							...(proxyOptions.location && { location: proxyOptions.location }),
-							...(proxyOptions.stickySession && { sticky_session: proxyOptions.stickySession }),
+							...opt(proxyOptions.location, { location: proxyOptions.location }),
+							...opt(proxyOptions.stickySession, { sticky_session: proxyOptions.stickySession }),
 						};
 					}
 
 					if (webhookOptions.url) {
 						body.webhook = {
 							url: webhookOptions.url,
-							...(webhookOptions.events && { events: webhookOptions.events }),
+							...opt(webhookOptions.events, { events: webhookOptions.events }),
 						};
 					}
 
@@ -547,9 +563,9 @@ export class WebScraper implements INodeType {
 
 					const body: Record<string, unknown> = {
 						query,
-						...(searchOptions.location && { location: searchOptions.location }),
-						...(searchOptions.language && { language: searchOptions.language }),
-						...(searchOptions.limit && { limit: searchOptions.limit }),
+						...opt(searchOptions.location, { location: searchOptions.location }),
+						...opt(searchOptions.language, { language: searchOptions.language }),
+						...opt(searchOptions.limit, { limit: searchOptions.limit }),
 					};
 
 					responseData = await this.helpers.httpRequestWithAuthentication.call(this, 'xCrawlApi', {
@@ -566,10 +582,10 @@ export class WebScraper implements INodeType {
 
 					const body: Record<string, unknown> = {
 						url,
-						...(mapOptions.limit && { limit: mapOptions.limit }),
-						...(mapOptions.includeSubdomains !== undefined && { include_subdomains: mapOptions.includeSubdomains }),
-						...(mapOptions.ignoreQueryParameters !== undefined && { ignore_query_parameters: mapOptions.ignoreQueryParameters }),
-						...(mapOptions.filter && { filter: mapOptions.filter }),
+						...opt(mapOptions.limit, { limit: mapOptions.limit }),
+						...opt(mapOptions.includeSubdomains !== undefined, { include_subdomains: mapOptions.includeSubdomains }),
+						...opt(mapOptions.ignoreQueryParameters !== undefined, { ignore_query_parameters: mapOptions.ignoreQueryParameters }),
+						...opt(mapOptions.filter, { filter: mapOptions.filter }),
 					};
 
 					responseData = await this.helpers.httpRequestWithAuthentication.call(this, 'xCrawlApi', {
@@ -595,14 +611,14 @@ export class WebScraper implements INodeType {
 
 					if (Object.keys(crawlerOptions).length > 0) {
 						body.crawler = {
-							...(crawlerOptions.limit && { limit: crawlerOptions.limit }),
-							...(crawlerOptions.maxDepth && { max_depth: crawlerOptions.maxDepth }),
-							...(crawlerOptions.includeEntireDomain !== undefined && { include_entire_domain: crawlerOptions.includeEntireDomain }),
-							...(crawlerOptions.includeSubdomains !== undefined && { include_subdomains: crawlerOptions.includeSubdomains }),
-							...(crawlerOptions.includeExternalLinks !== undefined && { include_external_links: crawlerOptions.includeExternalLinks }),
-							...(crawlerOptions.sitemaps !== undefined && { sitemaps: crawlerOptions.sitemaps }),
-							...(crawlerOptions.include && { include: (crawlerOptions.include as string).split('\n').filter(Boolean) }),
-							...(crawlerOptions.exclude && { exclude: (crawlerOptions.exclude as string).split('\n').filter(Boolean) }),
+							...opt(crawlerOptions.limit, { limit: crawlerOptions.limit }),
+							...opt(crawlerOptions.maxDepth, { max_depth: crawlerOptions.maxDepth }),
+							...opt(crawlerOptions.includeEntireDomain !== undefined, { include_entire_domain: crawlerOptions.includeEntireDomain }),
+							...opt(crawlerOptions.includeSubdomains !== undefined, { include_subdomains: crawlerOptions.includeSubdomains }),
+							...opt(crawlerOptions.includeExternalLinks !== undefined, { include_external_links: crawlerOptions.includeExternalLinks }),
+							...opt(crawlerOptions.sitemaps !== undefined, { sitemaps: crawlerOptions.sitemaps }),
+							...opt(crawlerOptions.include, { include: (crawlerOptions.include as string).split('\n').filter(Boolean) }),
+							...opt(crawlerOptions.exclude, { exclude: (crawlerOptions.exclude as string).split('\n').filter(Boolean) }),
 						};
 					}
 
@@ -619,22 +635,22 @@ export class WebScraper implements INodeType {
 
 					if (Object.keys(requestOptions).length > 0) {
 						body.request = {
-							...(requestOptions.device && { device: requestOptions.device }),
-							...(requestOptions.locale && { locale: requestOptions.locale }),
-							...(requestOptions.onlyMainContent !== undefined && { only_main_content: requestOptions.onlyMainContent }),
-							...(requestOptions.blockAds !== undefined && { block_ads: requestOptions.blockAds }),
-							...(requestOptions.skipTlsVerification !== undefined && { skip_tls_verification: requestOptions.skipTlsVerification }),
+							...opt(requestOptions.device, { device: requestOptions.device }),
+							...opt(requestOptions.locale, { locale: requestOptions.locale }),
+							...opt(requestOptions.onlyMainContent !== undefined, { only_main_content: requestOptions.onlyMainContent }),
+							...opt(requestOptions.blockAds !== undefined, { block_ads: requestOptions.blockAds }),
+							...opt(requestOptions.skipTlsVerification !== undefined, { skip_tls_verification: requestOptions.skipTlsVerification }),
 						};
 					}
 
 					if (Object.keys(jsRenderOptions).length > 0) {
 						body.js_render = {
-							...(jsRenderOptions.enabled !== undefined && { enabled: jsRenderOptions.enabled }),
-							...(jsRenderOptions.waitUntil && { wait_until: jsRenderOptions.waitUntil }),
-							...((jsRenderOptions.viewportWidth || jsRenderOptions.viewportHeight) && {
+							...opt(jsRenderOptions.enabled !== undefined, { enabled: jsRenderOptions.enabled }),
+							...opt(jsRenderOptions.waitUntil, { wait_until: jsRenderOptions.waitUntil }),
+							...opt(jsRenderOptions.viewportWidth || jsRenderOptions.viewportHeight, {
 								viewport: {
-									...(jsRenderOptions.viewportWidth && { width: jsRenderOptions.viewportWidth }),
-									...(jsRenderOptions.viewportHeight && { height: jsRenderOptions.viewportHeight }),
+									...opt(jsRenderOptions.viewportWidth, { width: jsRenderOptions.viewportWidth }),
+									...opt(jsRenderOptions.viewportHeight, { height: jsRenderOptions.viewportHeight }),
 								},
 							}),
 						};
@@ -642,15 +658,15 @@ export class WebScraper implements INodeType {
 
 					if (Object.keys(proxyOptions).length > 0) {
 						body.proxy = {
-							...(proxyOptions.location && { location: proxyOptions.location }),
-							...(proxyOptions.stickySession && { sticky_session: proxyOptions.stickySession }),
+							...opt(proxyOptions.location, { location: proxyOptions.location }),
+							...opt(proxyOptions.stickySession, { sticky_session: proxyOptions.stickySession }),
 						};
 					}
 
 					if (webhookOptions.url) {
 						body.webhook = {
 							url: webhookOptions.url,
-							...(webhookOptions.events && { events: webhookOptions.events }),
+							...opt(webhookOptions.events, { events: webhookOptions.events }),
 						};
 					}
 

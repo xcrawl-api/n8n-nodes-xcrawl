@@ -33,6 +33,7 @@ export class XCrawlApi implements ICredentialType {
 			baseURL: 'https://run.xcrawl.com',
 			url: '/v1/scrape',
 			method: 'POST',
+			json: true,
 			body: {
 				url: 'https://example.com',
 				output: { formats: ['markdown'] },

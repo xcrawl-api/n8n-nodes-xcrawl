@@ -35,11 +35,15 @@
     "crawler",
     "search"
   ],
-  "dependencies": {
-    "n8n-workflow": "^2.11.0"
-  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "index.js"
+  ],
   "devDependencies": {
     "typescript": "^5.3.0",
-    "@types/node": "^20.0.0"
+    "@types/node": "^20.0.0",
+    "n8n-workflow": "^2.11.0"
   }
 }
