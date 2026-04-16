@@ -1,11 +1,14 @@
 {
   "name": "n8n-nodes-xcrawl",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Scrape, crawl, and extract structured data from any website using the XCrawl API.",
   "main": "index.js",
   "scripts": {
-    "build": "tsc --project tsconfig.json && node -e \"require('fs').copyFileSync('nodes/WebScraper/xcrawl.svg','dist/nodes/WebScraper/xcrawl.svg')\"",
-    "dev": "tsc --project tsconfig.json --watch"
+    "build": "tsc --project tsconfig.json && node -e \"const fs=require('fs'); fs.mkdirSync('dist/nodes/WebScraper',{recursive:true}); fs.copyFileSync('nodes/WebScraper/xcrawl.svg','dist/nodes/WebScraper/xcrawl.svg'); fs.copyFileSync('nodes/WebScraper/xcrawl.dark.svg','dist/nodes/WebScraper/xcrawl.dark.svg');\"",
+    "dev": "tsc --project tsconfig.json --watch",
+    "lint": "eslint .",
+    "lintfix": "eslint . --fix",
+    "lint:fix": "npm run lintfix"
   },
   "author": {
     "name": "XCrawl",
@@ -45,6 +48,8 @@
     "n8n-workflow": "*"
   },
   "devDependencies": {
+    "@n8n/node-cli": "^0.23.1",
+    "eslint": "9.29.0",
     "typescript": "^5.3.0",
     "@types/node": "^20.0.0",
     "n8n-workflow": "^2.11.0"

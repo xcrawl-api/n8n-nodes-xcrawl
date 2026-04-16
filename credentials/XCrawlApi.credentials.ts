@@ -2,6 +2,7 @@ import {
 	IAuthenticateGeneric,
 	ICredentialTestRequest,
 	ICredentialType,
+	Icon,
 	INodeProperties,
 } from 'n8n-workflow';
 
@@ -9,6 +10,10 @@ export class XCrawlApi implements ICredentialType {
 	name = 'xCrawlApi';
 	displayName = 'XCrawl API';
 	documentationUrl = 'https://docs.xcrawl.com/doc';
+	icon: Icon = {
+		light: 'file:../nodes/WebScraper/xcrawl.svg',
+		dark: 'file:../nodes/WebScraper/xcrawl.dark.svg',
+	};
 	properties: INodeProperties[] = [
 		{
 			displayName: 'API Key',
