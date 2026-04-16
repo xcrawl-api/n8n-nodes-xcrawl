@@ -41,6 +41,9 @@
     "LICENSE",
     "index.js"
   ],
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  },
   "devDependencies": {
     "typescript": "^5.3.0",
     "@types/node": "^20.0.0",

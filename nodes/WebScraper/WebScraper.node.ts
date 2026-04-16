@@ -2,6 +2,7 @@ import {
 	IDataObject,
 	IExecuteFunctions,
 	INodeExecutionData,
+	NodeOperationError,
 	INodeType,
 	INodeTypeDescription,
 	NodeConnectionTypes,
@@ -688,7 +689,10 @@ export class WebScraper implements INodeType {
 					}) as IDataObject;
 				}
 
-				returnData.push({ json: responseData });
+				returnData.push({
+					json: responseData,
+					pairedItem: { item: i },
+				});
 
 			} catch (error) {
 				const err = error as { message: string; response?: { data: unknown } };
@@ -697,10 +701,13 @@ export class WebScraper implements INodeType {
 					: err.message;
 				const errMsg = `${err.message} | API response: ${errDetail}`;
 				if (this.continueOnFail()) {
-					returnData.push({ json: { error: errMsg } });
+					returnData.push({
+						json: { error: errMsg },
+						pairedItem: { item: i },
+					});
 					continue;
 				}
-				throw new Error(errMsg);
+				throw new NodeOperationError(this.getNode(), errMsg, { itemIndex: i });
 			}
 		}
 
