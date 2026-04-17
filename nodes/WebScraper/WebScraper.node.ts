@@ -2,7 +2,8 @@ import {
 	IDataObject,
 	IExecuteFunctions,
 	INodeExecutionData,
-	NodeOperationError,
+	JsonObject,
+	NodeApiError,
 	INodeType,
 	INodeTypeDescription,
 	NodeConnectionTypes,
@@ -716,7 +717,7 @@ export class WebScraper implements INodeType {
 					});
 					continue;
 				}
-				throw new NodeOperationError(this.getNode(), errMsg, { itemIndex: i });
+				throw new NodeApiError(this.getNode(), error as JsonObject, { itemIndex: i });
 			}
 		}
 
